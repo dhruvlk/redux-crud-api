@@ -5,11 +5,18 @@ import {
   GET_USER_ERROR,
   GET_USER_REQUEST,
   GET_USER_SUCCESS,
+  DELETE_USER_ERROR,
+  DELETE_USER_REQUEST,
+  DELETE_USER_SUCCESS,
+  EDIT_USER_ERROR,
+  EDIT_USER_REQUEST,
+  EDIT_USER_SUCCESS,
 } from "../actions/users-api"
 
 const initialState = {
   usersListLoading: false,
   usersList: [],
+  id: null,
   usersListError: null,
   userSaveLoading: false,
   userSaveStatus: false,
@@ -34,6 +41,27 @@ export default function userApiReducer(state = initialState, action) {
     case ADD_USER_SUCCESS:
       return { ...state, userSaveLoading: false, userSaveStatus: true };
     case ADD_USER_ERROR:
+      return {
+        ...state,
+        userSaveLoading: false,
+        userSaveError: action.payload,
+      };
+    case DELETE_USER_REQUEST:
+      return { ...state, userSaveLoading: true };
+    case DELETE_USER_SUCCESS:
+      return { ...state, userSaveLoading: false, userSaveStatus: true };
+    case DELETE_USER_ERROR:
+      return {
+        ...state,
+        userSaveLoading: false,
+        userSaveError: action.payload,
+      };
+
+    case EDIT_USER_REQUEST:
+      return { ...state, userSaveLoading: true };
+    case EDIT_USER_SUCCESS:
+      return { ...state, userSaveLoading: false, userSaveStatus: true };
+    case EDIT_USER_ERROR:
       return {
         ...state,
         userSaveLoading: false,

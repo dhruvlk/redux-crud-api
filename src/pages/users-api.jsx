@@ -2,7 +2,11 @@ import React, { useEffect, useState } from "react";
 import {
   addUsersFromApiMiddleware,
   getUsersFromApiMiddleware,
+  deleteUsersFromApiMiddleware,
+  editUsersFromApiMiddleware,
 } from "../middlewares/users-api";
+// import { updateUser } from "../services/users-api";
+
 import { useDispatch, useSelector } from "react-redux";
 import Table from "react-bootstrap/Table";
 import Skeleton from "react-loading-skeleton";
@@ -11,8 +15,11 @@ import "react-loading-skeleton/dist/skeleton.css";
 const UsersAPI = () => {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
+  const [gender, setGender] = useState("");
+  const [status, setStatus] = useState("");
+  // const [deleteId, setDeleteId] = useState();
   const dispatch = useDispatch();
-  const { usersListLoading, usersList, userSaveLoading, userSaveStatus } =
+  const { usersListLoading, usersList, userSaveLoading, userSaveStatus, id } =
     useSelector((state) => state.userApiReducer);
 
   useEffect(() => {
@@ -33,6 +40,26 @@ const UsersAPI = () => {
   const handleEmailChange = (e) => {
     setEmail(e.target.value);
   };
+  const handleGenderChange = (e) => {
+    setGender(e.target.value);
+  };
+  const handleStatusChange = (e) => {
+    console.log("--------------------->", e.target.value);
+    setStatus(e.target.value);
+  };
+  const handleDelete = (id) => {
+    let choice = window.confirm("Are you sure you want to DELETE this record?");
+    if (!choice) {
+      return;
+    }
+    dispatch(deleteUsersFromApiMiddleware(id));
+    window.alert("User deleted successfully!");
+  };
+
+  const handleEdit = (id) => {
+    console.log(id);
+    dispatch(editUsersFromApiMiddleware(id));
+  };
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -40,8 +67,8 @@ const UsersAPI = () => {
       addUsersFromApiMiddleware({
         name,
         email,
-        gender: "male",
-        status: "active",
+        gender,
+        status,
       })
     );
   };
@@ -67,6 +94,7 @@ const UsersAPI = () => {
                     fill="currentColor"
                     className="bi bi-pencil-square"
                     viewBox="0 0 16 16"
+                    onClick={() => handleEdit(_)}
                   >
                     <path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z" />
                     <path
@@ -83,6 +111,7 @@ const UsersAPI = () => {
                     fill="currentColor"
                     className="bi bi-trash"
                     viewBox="0 0 16 16"
+                    onClick={() => handleDelete(_.id)}
                   >
                     <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6z" />
                     <path
@@ -106,6 +135,37 @@ const UsersAPI = () => {
           value={email}
           onChange={handleEmailChange}
         />
+        <br />
+        <br />
+        <input
+          type="radio"
+          id="html"
+          name={gender}
+          value="male"
+          onChange={handleGenderChange}
+        />
+        <label>Male</label>
+        <input
+          type="radio"
+          id="css"
+          name={gender}
+          value="female"
+          onChange={handleGenderChange}
+        />
+        <label>Female</label>
+        &nbsp;&nbsp;
+        <br />
+        <br />
+        <label>Status</label>
+        <select id="status" onChange={handleStatusChange}>
+          <option>Select status</option>
+          <option name={status} value="active">
+            Active
+          </option>
+          <option name={status} value="inactive">
+            Inactive
+          </option>
+        </select>
         <button type="submit" disabled={userSaveLoading}>
           {userSaveLoading ? "Loading..." : "Save"}
         </button>

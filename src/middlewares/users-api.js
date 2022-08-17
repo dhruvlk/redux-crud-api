@@ -5,6 +5,12 @@ import {
   getUserError,
   getUserRequest,
   getUserSuccess,
+  deleteUserError,
+  deleteUserRequest,
+  deleteUserSuccess,
+  editUserError,
+  editUserRequest,
+  editUserSuccess,
 } from "../actions/users-api"
 import UserServices from "../services/users-api"
 
@@ -33,6 +39,34 @@ export function addUsersFromApiMiddleware(data) {
       })
       .catch((error) => {
         dispatch(addUserError(error));
+      });
+  };
+}
+
+export function deleteUsersFromApiMiddleware(id) {
+  return (dispatch) => {
+    dispatch(deleteUserRequest());
+    UserServices.DeleteFromApi(id)
+      .then((res) => {
+        const { id } = res;
+        dispatch(deleteUserSuccess(id));
+      })
+      .catch((error) => {
+        dispatch(deleteUserError(error));
+      });
+  };
+}
+
+export function editUsersFromApiMiddleware(data) {
+  return (dispatch) => {
+    dispatch(editUserRequest());
+    UserServices.editFromApi(data)
+      .then((res) => {
+        const { data } = res;
+        dispatch(editUserSuccess(data));
+      })
+      .catch((error) => {
+        dispatch(editUserError(error));
       });
   };
 }
